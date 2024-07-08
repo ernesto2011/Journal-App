@@ -4,7 +4,7 @@ import { Button, Grid, Link, TextField, Typography } from "@mui/material"
 import { AuthLayout } from "../layout/AuthLayout"
 import { useForm } from "../../hooks"
 import { useDispatch } from "react-redux"
-import { checkAuthentication } from "../../store/auth"
+import { checkAuthentication, startGoogleSigIn } from "../../store/auth"
 
 export const LoginPage = () => {
     const dispatch = useDispatch();
@@ -19,7 +19,7 @@ export const LoginPage = () => {
     const googleSignIn = (event) => {
         event.preventDefault();
         console.log('Google Sign In')
-        dispatch(checkAuthentication())
+        dispatch(startGoogleSigIn())
     }
   return (
     <AuthLayout title="Login">
