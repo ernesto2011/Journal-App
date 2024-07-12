@@ -5,13 +5,18 @@ import { AuthLayout } from "../layout/AuthLayout"
 import { useForm } from "../../hooks"
 import { useDispatch } from "react-redux"
 import { checkAuthentication, startGoogleSigIn } from "../../store/auth"
+import { useSelector } from "react-redux"
+import { useMemo } from "react"
 
 export const LoginPage = () => {
+
+    const {status} = useSelector(state => state.auth)
     const dispatch = useDispatch();
     const  {email, password, onInputChange, formState} =useForm({
         email: 'demo@demo.com',
         password: '123456'
-    })
+    });
+    const isAuthenticating = useMemo(()=>status ==='checking', [status])
     const handleSubmit = (event) => {
         event.preventDefault();
         dispatch(checkAuthentication())
@@ -45,10 +50,20 @@ export const LoginPage = () => {
                     </Grid>
                     <Grid container spacing={2} sx={{mb:2, mt:1}}>
                         <Grid item xs={12} sm={6} >
-                            <Button variant="contained" type="submit" fullWidth>Login</Button>
+                            <Button
+                            disabled={isAuthenticating}
+                            variant="contained" 
+                            type="submit" 
+                            fullWidth>
+                                Login
+                            </Button>
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <Button variant="contained" onClick={googleSignIn} fullWidth>
+                            <Button 
+                            disabled={isAuthenticating}
+                            variant="contained" 
+                            onClick={googleSignIn} 
+                            fullWidth>
                                 <Google/> <Typography sx={{ml:1}}>Google</Typography>
                             </Button>
                         </Grid>
