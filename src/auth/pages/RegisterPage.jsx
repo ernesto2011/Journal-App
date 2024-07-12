@@ -33,8 +33,10 @@ export const RegisterPage = () => {
         event.preventDefault();
         setFormSubmited(true);
         if (!isFormValid) return;
+
         dispatch(startCreateUserWithEmailPassword(formState))
     }
+    console.log(formState);
   return (
     <AuthLayout title="Crear cuenta">
         <form onSubmit={handleSubmit}>
