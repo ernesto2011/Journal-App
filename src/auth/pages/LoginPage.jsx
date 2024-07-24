@@ -8,14 +8,14 @@ import { startGoogleSigIn, startLoginWithCredentials } from "../../store/auth"
 import { useSelector } from "react-redux"
 import { useMemo } from "react"
 
+const formData = {
+    email: null,
+    password: null
+}
 export const LoginPage = () => {
-
     const {status, errorMessage} = useSelector(state => state.auth)
     const dispatch = useDispatch();
-    const  {email, password, onInputChange, formState} =useForm({
-        email: null,
-        password: null
-    });
+    const  {email, password, onInputChange, formState} =useForm(formData);
     const isAuthenticating = useMemo(()=>status ==='checking', [status])
     const handleSubmit = (event) => {
         event.preventDefault();
