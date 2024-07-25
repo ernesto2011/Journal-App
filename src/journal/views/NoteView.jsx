@@ -5,10 +5,12 @@ import { useSelector, useDispatch } from "react-redux"
 import { useForm } from "../../hooks/useForm"
 import { useMemo, useEffect } from "react"
 import { setActiveNote, startSaveNote } from "../../store/journal"
+import { toast, ToastContainer } from "react-toastify"
+import 'react-toastify/dist/ReactToastify.css';
 
 export const NoteView = () => {
     const dispatch = useDispatch();
-    const { active:note } = useSelector(state => state.journal)
+    const { active:note, messageSaved, isSaving } = useSelector(state => state.journal)
     const { title, content, date, onInputChange, formState} = useForm(note);
     const dateString = useMemo(()=>{
         const newDate = new Date(date).toUTCString();
@@ -19,6 +21,17 @@ export const NoteView = () => {
         dispatch(setActiveNote(formState));
      },[formState])
 
+     useEffect(() => {
+        //se lanzara un toast de toastify
+        if(messageSaved.length > 0){
+            toast.success(messageSaved,{
+                position: 'bottom-right',
+                
+            });
+     //resetear el mensaje para el siguiente guardado.  //esto es para evitar que se muestre el toast en cada guardado.  //esto se hace porque en el useEffect se resetea el mensaje cuando se vuelve a cargar la pagina.  //se podría solucionar con un reducer en lugar de un useSelector para manejar el mensaje de guard
+        }
+     }, [messageSaved])
+     
      const handleSave = ()=>{
         dispatch(startSaveNote())
      }
@@ -30,7 +43,11 @@ export const NoteView = () => {
             <Typography fontSize={ 30 } fontWeight='light' >{dateString}</Typography>
         </Grid>
         <Grid item>
-            <Button onClick={handleSave} color="primary" sx={{padding:2}}>
+            <Button 
+            disabled= {isSaving}
+            onClick={handleSave} 
+            color="primary" 
+            sx={{padding:2}}>
                 <SaveAltOutlined sx={{fontSize:30, mr:1}} />
                 Guardar
             </Button>
@@ -61,6 +78,7 @@ export const NoteView = () => {
             />
         </Grid>
         <ImageGallery/>
+        <ToastContainer autoClose={4000} zIndex={1000} />
     </Grid>
   )
 }
