@@ -1,12 +1,13 @@
 import { SaveAltOutlined } from "@mui/icons-material"
-import { Button, Grid, TextField, Typography } from "@mui/material"
+import { Button, Grid, IconButton, TextField, Typography } from "@mui/material"
 import { ImageGallery } from "../components"
 import { useSelector, useDispatch } from "react-redux"
 import { useForm } from "../../hooks/useForm"
-import { useMemo, useEffect } from "react"
-import { setActiveNote, startSaveNote } from "../../store/journal"
+import { useMemo, useEffect, useRef } from "react"
+import { setActiveNote, startSaveNote, startUploadFiles } from "../../store/journal"
 import { toast, ToastContainer } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css';
+import { UploadFileOutlined } from "@mui/icons-material"
 
 export const NoteView = () => {
     const dispatch = useDispatch();
@@ -16,6 +17,7 @@ export const NoteView = () => {
         const newDate = new Date(date).toUTCString();
         return newDate
     },[date]);
+    const fileInputRef = useRef();
 
      useEffect(()=>{
         dispatch(setActiveNote(formState));
@@ -35,6 +37,10 @@ export const NoteView = () => {
      const handleSave = ()=>{
         dispatch(startSaveNote())
      }
+     const fileInputChange = ({target})=>{
+        if(target.files ===0) return;
+        dispatch(startUploadFiles(target.files));
+     }
   return (
     <Grid 
     className='animate__animated animate__fadeIn animate__faster'
@@ -42,6 +48,13 @@ export const NoteView = () => {
         <Grid item>
             <Typography fontSize={ 30 } fontWeight='light' >{dateString}</Typography>
         </Grid>
+        <input type="file" ref={fileInputRef} multiple onChange={fileInputChange} style={{display:'none'}} />
+        <IconButton color="primary"
+        onClick={()=>fileInputRef.current.click()}  //cuando se haga click en el botón de subida de archivos
+         disabled={isSaving}
+        >
+            <UploadFileOutlined/>
+        </IconButton>
         <Grid item>
             <Button 
             disabled= {isSaving}
@@ -77,7 +90,7 @@ export const NoteView = () => {
             minRows={ 5 }
             />
         </Grid>
-        <ImageGallery/>
+        <ImageGallery images={note.imageUrls} />
         <ToastContainer autoClose={4000} zIndex={1000} />
     </Grid>
   )
