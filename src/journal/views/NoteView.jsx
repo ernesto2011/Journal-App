@@ -1,13 +1,12 @@
-import { SaveAltOutlined } from "@mui/icons-material"
+import { DeleteOutline, SaveAltOutlined, UploadFileOutlined } from "@mui/icons-material"
 import { Button, Grid, IconButton, TextField, Typography } from "@mui/material"
 import { ImageGallery } from "../components"
 import { useSelector, useDispatch } from "react-redux"
 import { useForm } from "../../hooks/useForm"
 import { useMemo, useEffect, useRef } from "react"
-import { setActiveNote, startSaveNote, startUploadFiles } from "../../store/journal"
+import { setActiveNote, startDeleteNote, startSaveNote, startUploadFiles } from "../../store/journal"
 import { toast, ToastContainer } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css';
-import { UploadFileOutlined } from "@mui/icons-material"
 
 export const NoteView = () => {
     const dispatch = useDispatch();
@@ -40,6 +39,13 @@ export const NoteView = () => {
      const fileInputChange = ({target})=>{
         if(target.files ===0) return;
         dispatch(startUploadFiles(target.files));
+     }
+     const onDelete = () =>{
+        dispatch(startDeleteNote());
+        toast.error('Nota eliminada',{
+            position: 'bottom-right',
+            
+        });
      }
   return (
     <Grid 
@@ -89,6 +95,15 @@ export const NoteView = () => {
             label="Titulo"
             minRows={ 5 }
             />
+        </Grid>
+        <Grid container justifyContent='end'>
+            <Button
+            onClick={onDelete}
+            sx= {{mt:2}}
+            color= 'error'
+            >
+              <DeleteOutline />
+            </Button>
         </Grid>
         <ImageGallery images={note.imageUrls} />
         <ToastContainer autoClose={4000} zIndex={1000} />

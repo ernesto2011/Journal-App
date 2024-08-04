@@ -9,8 +9,8 @@ import { useSelector } from "react-redux"
 import { useMemo } from "react"
 
 const formData = {
-    email: null,
-    password: null
+    email: '',
+    password: ''
 }
 export const LoginPage = () => {
     const {status, errorMessage} = useSelector(state => state.auth)
